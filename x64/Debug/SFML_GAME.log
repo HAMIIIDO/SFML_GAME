@@ -1,0 +1,4 @@
+﻿  Game.cpp
+C:\Users\HAMIDO\source\repos\SFML_GAME\Game.cpp(241,70): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\HAMIDO\source\repos\SFML_GAME\Game.cpp(241,49): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  SFML_GAME.vcxproj -> C:\Users\HAMIDO\source\repos\SFML_GAME\x64\Debug\SFML_GAME.exe
