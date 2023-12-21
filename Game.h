@@ -49,3 +49,33 @@ public:
 	
 };
 
+
+
+
+/*
+
+
+
+####
+
+Player specification:
+shape radius, collision radius, spped, fill color,outline color,
+outline thickness,shape verticies
+
+enemy specification:
+shape radius, collision radius,min/max speed, fill color,outline color,
+outline thickness, min/max vertices/ small lifespan,spawn interval,
+
+bullet Specification:
+shape radius, collision radius, spped, fill color,outline color,
+outline thickness,shape verticies,lifespan
+
+
+
+
+
+
+
+
+##
+*/

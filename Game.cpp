@@ -1,7 +1,9 @@
 #include "Game.h"
+#include "math.h"
 #include <iostream>
 #include <fstream>
-#include<sstream>
+#include <sstream>
+#include "Vec2.h"
 
 
 Game::Game(const std::string& config) { init(config); }
@@ -16,7 +18,7 @@ Game::Game(const std::string& config) { init(config); }
 
 void Game::init(const std::string& path){
 	// read in config file here
-	std::ifstream fin("config.txt");
+	std::ifstream fin(path);
 	std::string line;
 	while (std::getline(fin, line)) {
 		std::istringstream iss(line);
@@ -104,34 +106,43 @@ void Game::spawnPlayer(){
 void Game::spawnEnemy(){
 	//todo make sure the enemy is spawned properly with the m_enemyconfig variables
 	/// the enemy must be spawned compelitly within the bounds of the window 
-	 
+	// 
 
-	auto entity = m_entities.addEntity("enemy");
+	//auto entity = m_entities.addEntity("enemy");
 
 
-	// give this entity a transofrm so it spawns at (200,200) and velocity (1,1) and angle 0
-	float ex = rand() % m_window.getSize().x +0.0f;
-	float ey =rand()% m_window.getSize().y +0.0f;
+	//// give this entity a transofrm so it spawns at (200,200) and velocity (1,1) and angle 0
+	//float ex = rand() % m_window.getSize().x +0.0f;
+	//float ey =rand()% m_window.getSize().y +0.0f;
 
-	entity->cTransform = std::make_shared<CTransform>(Vec2(200, 200), Vec2(1.0f, 1.0f), 0.0f);
+	//entity->cTransform = std::make_shared<CTransform>(Vec2(200, 200), Vec2(1.0f, 1.0f), 0.0f);
 
-	// the entity's shape will have radius 32 ,8sides dark gry fill , red outline of thik 4
-	entity->cShape = std::make_shared<CShape>(m_enemyconfig.SR,4, sf::Color(60, 255, 10), sf::Color(m_enemyconfig.OR, m_enemyconfig.OG, m_enemyconfig.OB), m_enemyconfig.OT);
+	//// the entity's shape will have radius 32 ,8sides dark gry fill , red outline of thik 4
+	//entity->cShape = std::make_shared<CShape>(m_enemyconfig.SR,4, sf::Color(60, 255, 10), sf::Color(m_enemyconfig.OR, m_enemyconfig.OG, m_enemyconfig.OB), m_enemyconfig.OT);
 
-	//Add an input compenent to the player so that we can use inputs
-	entity->cInput = std::make_shared<CInput>();
-	//record when the most recent enemy was spowned
-	m_lastEnemySpawnTime = m_currentFrame;
+	////Add an input compenent to the player so that we can use inputs
+	//entity->cInput = std::make_shared<CInput>();
+	////record when the most recent enemy was spowned
+	//m_lastEnemySpawnTime = m_currentFrame;
 
 
 }
 void Game::spawnBullet(std::shared_ptr<Entity> entity, const Vec2& mousePos){
 // todo spawning of bullet wich travels towerd target /bullet speed is scaler /velocity formila in notes
-	auto bullet = m_entities.addEntity("bullet");
+	auto bx = entity->cTransform->pos.x;
+	auto by = entity->cTransform->pos.y;
 
-	bullet->cTransform = std::make_shared<CTransform>(mousePos, Vec2(0, 0), 0);
+	auto bullet = m_entities.addEntity("bullet");
+	bullet->cTransform = std::make_shared<CTransform>(Vec2(bx, by), Vec2(1, 1), 0);
 	bullet->cShape = std::make_shared<CShape>(m_bulletconfig.SR,m_bulletconfig.V, sf::Color(m_bulletconfig.FR, m_bulletconfig.FG, m_bulletconfig.FB),
 		sf::Color(m_bulletconfig.OR, m_bulletconfig.OG, m_bulletconfig.OB), m_bulletconfig.OT);
+
+	Vec2 D(mousePos.x - bx, mousePos.y - by); // vector bztween mouse and player
+	float dist = std::sqrtf(D.x * D.x + D.y * D.y);
+	Vec2 norm_vec(D.x / dist, D.y / dist); // normalized version
+	bullet->cTransform->velocity = {norm_vec.x* m_bulletconfig.S ,norm_vec.y* m_bulletconfig.S };
+	/*
+	bullet->cTransform->velocity = {0,0};*/
 }
 
 
@@ -161,23 +172,6 @@ void Game::spawnSmallEnemies(std::shared_ptr<Entity> entity){
 
 }
 void Game::spawnSpetialWeapon(std::shared_ptr<Entity> entity){}
-
-void Game::sRender(){
-
-	m_window.clear();
-
-	for (auto& e : m_entities.getEntities()) {
-		
-		e->cTransform->angle += 1.0f;
-		e->cShape->circle.setRotation(e->cTransform->angle += 1.0f);
-		e->cShape->circle.setPosition(e->cTransform->pos.x, e->cTransform->pos.y);
-
-		e->cShape->circle.setRotation(e->cTransform->angle);
-		m_window.draw(e->cShape->circle);
-	 }
-	//std::cout << m_player->cShape->circle.getPosition().x << "---"<< m_player->cShape->circle.getPosition().x<<std::endl;
-	m_window.display();
-}
 void Game::setPaused(bool paused){}
 void Game::sMovement(){
 	// implement player mvt
@@ -198,10 +192,30 @@ void Game::sMovement(){
 
 	// sample mvt speed update 
 
-	m_player->cTransform->pos.x += m_player->cTransform->velocity.x;
-	m_player->cTransform->pos.y += m_player->cTransform->velocity.y;
+	for (auto& e : m_entities.getEntities()) {
+
+
+	e->cTransform->pos.x += e->cTransform->velocity.x;
+	e->cTransform->pos.y += e->cTransform->velocity.y;
+	}
+	
 }
 
+
+void Game::sRender(){
+
+	m_window.clear();
+
+	for (auto& e : m_entities.getEntities()) {
+		
+		e->cTransform->angle += 1.0f;
+		e->cShape->circle.setRotation(e->cTransform->angle += 1.0f);
+		e->cShape->circle.setPosition(e->cTransform->pos.x, e->cTransform->pos.y);
+		m_window.draw(e->cShape->circle);
+	 }
+	//std::cout << m_player->cShape->circle.getPosition().x << "---"<< m_player->cShape->circle.getPosition().x<<std::endl;
+	m_window.display();
+}
 void Game::sUserInput(){
 // todo handle user input here / only player's input component variables here /no player's mvt logic here/mvt system will read vars
 
