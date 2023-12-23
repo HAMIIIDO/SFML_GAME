@@ -2,6 +2,14 @@
 #include "Entity.h"
 #include "EntityManager.h"
 #include <SFML/Graphics.hpp>
+#include <random>
+#include "math.h"
+#include <chrono>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include "Vec2.h"
+
 struct WindowConfig { long long w_width, w_height;int w_frames, screen_mode; };
 struct FontConfig { std::string font;int size, R, G, B; };
 struct PlayerConfig  { int SR, CR, FR, FG, FB, OR, OG,OB, OT, V;float S; };
@@ -24,8 +32,11 @@ class Game
 	int                    m_lastEnemySpawnTime = 0;
 	bool                   m_pused = false; // whether we update game logic
 	bool                   m_running = true; // whether bthe game is running 
+	sf::Clock              m_clock ;
+	float                  startTime = m_clock.getElapsedTime().asMicroseconds();
 
 
+																																																																																																																																																																																																																																				
 	std::shared_ptr<Entity> m_player;
 
 	void init(const std::string& config);         // initialize the gameState with a config file
@@ -67,7 +78,7 @@ shape radius, collision radius,min/max speed, fill color,outline color,
 outline thickness, min/max vertices/ small lifespan,spawn interval,
 
 bullet Specification:
-shape radius, collision radius, spped, fill color,outline color,
+shape radius, collision radius, speed, fill color,outline color,
 outline thickness,shape verticies,lifespan
 
 

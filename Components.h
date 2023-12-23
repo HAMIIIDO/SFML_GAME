@@ -21,6 +21,8 @@ public:
 		circle.setOutlineColor(outline);
 		circle.setOutlineThickness(thickness);
 		circle.setOrigin(radius, radius);
+		circle.getFillColor();
+		circle.getOutlineColor();
 	}
 };
 

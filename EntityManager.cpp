@@ -6,19 +6,13 @@ EntityManager::EntityManager(){}
 void EntityManager::update() {
 	//todo add entities from m_enttoAdd the proper locations/ add to entityvec and antityMap
 
-	for (auto e : m_entitiesToAdd) {
+	for (auto& e : m_entitiesToAdd) {
 		m_entities.push_back(e);
 		m_entityMap[e->tag()].push_back(e);
 
 
 	}
-	/*for (auto e : m_entitiesToAdd) {
-		if (!e->isActive()) {
-			std::remove_if();
-			m_entities.push_back(e);
-			m_entityMap[e->tag()].push_back(e);
-		}*/
-		//	}
+	
 	m_entitiesToAdd.clear();
 	//remove dead entitie
 
@@ -27,27 +21,19 @@ void EntityManager::update() {
 	// remove dead from map
 	// c++17 way to iterate through [key,value]pairs in map
 	for (auto& pair : m_entityMap) {
-		const std::string& tag = pair.first;   // Access the key (tag) of the map
+		const std::string& tag = pair.first;  
 		EntityVec& entityVec = pair.second;    // Access the value (entityVec) of the map
 
-		// Now you can use 'tag' and 'entityVec' in your loop
 		removeDeadEntities(entityVec);
-		// Additional operations using 'tag' or 'entityVec'
+		
 	}
 
 }
 
 void EntityManager::removeDeadEntities(EntityVec& vec) {
-
-	// remove all entities from the input vec
-	// this is called by the update func
-	/*std::removeif
-	for (auto& e : vec) {
-		if (!e->isActive) {
-			remove from vec;
-
-		}
-	}*/
+	
+	vec.erase(std::remove_if(vec.begin(), vec.end(),
+		[](const auto& e) { return !e->isActive(); }), vec.end());
 }
 std::shared_ptr<Entity> EntityManager::addEntity(const std::string & tag) {
 		auto entity = std::shared_ptr<Entity>(new Entity(m_totalEntities++, tag));
