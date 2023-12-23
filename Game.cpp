@@ -106,6 +106,23 @@ void Game::spawnEnemy(){
 
 
 
+	// speed 
+	int diff_speed = 1 + m_enemyconfig.SMAX - 2 * m_enemyconfig.SMIN;
+
+	std::random_device rd;
+	std::mt19937 gen(rd());
+
+	int lowerBound = -1;
+	int upperBound = 1;
+	std::uniform_int_distribution<int> distribution(lowerBound, upperBound);
+	int randomNum = distribution(gen);
+	int valid_num{1};
+	(randomNum == 1 || randomNum == -1) ? (valid_num = randomNum) : NULL;
+
+	float speed_x = m_enemyconfig.SMIN + (rand() % diff_speed );
+	float speed_y = m_enemyconfig.SMIN + (rand() % diff_speed) ;
+	//srand(time(NULL));
+
 	
 	//position
 	int diff_x = 1 + m_window.getSize().x - 2*m_enemyconfig.SR;
@@ -113,11 +130,10 @@ void Game::spawnEnemy(){
 	float ex = m_enemyconfig.SR +( rand() % diff_x);
 	float ey = m_enemyconfig.SR + (rand() % diff_y);
 
-	//srand(time(NULL));
 	// veticies
 	int diff_vertex = 1 + m_enemyconfig.VMAX - m_enemyconfig.VMIN;
 	int vertex = m_enemyconfig.VMIN + (rand() % diff_vertex);
-	 
+	// color
 	int R = rand() % 256;
 	int G = rand() % 256;
 	int B = rand() % 256;
@@ -125,11 +141,20 @@ void Game::spawnEnemy(){
 
 
 	auto entity = m_entities.addEntity("enemy");
-	entity->cTransform = std::make_shared<CTransform>(Vec2(ex, ey), Vec2(0.0f, 0.0f), 0.0f);
-	entity->cShape = std::make_shared<CShape>(m_enemyconfig.SR,vertex, sf::Color(R,G, B), sf::Color(m_enemyconfig.OR, m_enemyconfig.OG, m_enemyconfig.OB), m_enemyconfig.OT);
-
+	entity->cTransform = std::make_shared<CTransform>(Vec2(ex, ey), Vec2(speed_x * valid_num, speed_y * valid_num), 0.0f);
+	entity->cShape = std::make_shared<CShape>(m_enemyconfig.SR,vertex, sf::Color(R,G, B),
+		sf::Color(m_enemyconfig.OR, m_enemyconfig.OG, m_enemyconfig.OB), m_enemyconfig.OT);
 	m_lastEnemySpawnTime = m_currentFrame;
 
+		/*std::cout << "---x" << entity->cTransform->pos.x << "\n";
+		std::cout <<"height: " << entity->cShape->circle.getLocalBounds().height << "\n";
+		std::cout << "---y" << entity->cTransform->pos.y << "\n";
+		std::cout <<"width: " << entity->cShape->circle.getLocalBounds().width << "\n";
+		std::cout << "top : " << entity->cShape->circle.getLocalBounds().top<< "\n";
+		std::cout << "left: " << entity->cShape->circle.getLocalBounds().left << "\n";
+
+
+*/
 
 }
 void Game::spawnBullet(std::shared_ptr<Entity> entity, const Vec2& mousePos){
@@ -141,17 +166,10 @@ void Game::spawnBullet(std::shared_ptr<Entity> entity, const Vec2& mousePos){
 	bullet->cShape = std::make_shared<CShape>(m_bulletconfig.SR,m_bulletconfig.V, sf::Color(m_bulletconfig.FR, m_bulletconfig.FG, m_bulletconfig.FB,255),
 		sf::Color(m_bulletconfig.OR, m_bulletconfig.OG, m_bulletconfig.OB,255), m_bulletconfig.OT);
 
-
-
 	Vec2 D(mousePos.x - bx, mousePos.y - by); // vector bztween mouse and player
 	float dist = std::sqrtf(D.x * D.x + D.y * D.y);
 	Vec2 norm_vec(D.x / dist, D.y / dist); // normalized version
 	bullet->cTransform->velocity = {norm_vec.x* m_bulletconfig.S ,norm_vec.y* m_bulletconfig.S };
-
-	
-
-
-
 }
 
 
@@ -183,7 +201,23 @@ void Game::spawnSmallEnemies(std::shared_ptr<Entity> entity){
 void Game::spawnSpetialWeapon(std::shared_ptr<Entity> entity){}
 void Game::setPaused(bool paused){}
 void Game::sMovement() {
-	
+	for (auto& e : m_entities.getEntities("enemy")) {
+
+		if (m_windowconfig.w_width < (e->cShape->circle.getPosition().x + m_enemyconfig.SR) 
+			|| e->cShape->circle.getPosition().x - m_enemyconfig.SR <0) {
+			e->cTransform->velocity.x = -e->cTransform->velocity.x;
+			std::cout << e->cTransform->velocity.x + m_enemyconfig.SR;
+		}
+		if (m_windowconfig.w_height < (e->cShape->circle.getPosition().y + m_enemyconfig.SR)
+			|| e->cShape->circle.getPosition().y - m_enemyconfig.SR < 0) {
+			e->cTransform->velocity.y = -e->cTransform->velocity.y;
+			std::cout << e->cTransform->velocity.x + m_enemyconfig.SR;
+		}
+		
+	}
+
+
+
 	m_player->cTransform->velocity = { 0,0 };
 	if (m_player->cInput->up) {
 		m_player->cTransform->velocity.y = -5;
@@ -197,22 +231,9 @@ void Game::sMovement() {
 	if (m_player->cInput->left) {
 		m_player->cTransform->velocity.x = -5;
 	}
-	       
-	for (auto& e : m_entities.getEntities()) {
-			e->cTransform->pos.x += e->cTransform->velocity.x;
-			e->cTransform->pos.y += e->cTransform->velocity.y;
-	}
-
-
 	for (auto& b : m_entities.getEntities("bullet")) {
 
-
 			sf::Uint8 alpha = b->cShape->circle.getFillColor().a;
-
-			// Adjust the fading speed
-			float fadeSpeed = m_bulletconfig.L;
-
-			// Decrease the alpha value if it's greater than 0
 			if (static_cast<int>(alpha )> 0) {
 				alpha -= static_cast<sf::Uint8>(1);
 				b->cShape->circle.setFillColor(sf::Color(
@@ -226,8 +247,14 @@ void Game::sMovement() {
 			}
 			}else{
 			}
-
 	}
+	       
+	for (auto& e : m_entities.getEntities()) {
+			e->cTransform->pos.x += e->cTransform->velocity.x;
+			e->cTransform->pos.y += e->cTransform->velocity.y;
+	}
+
+
 }
 
 void Game::sRender(){

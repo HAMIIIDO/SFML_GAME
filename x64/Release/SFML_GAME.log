@@ -4,11 +4,11 @@ C:\Users\HAMIDO\source\repos\SFML_GAME\Game.h(36,76): warning C4244: 'initializi
   
 C:\Users\HAMIDO\source\repos\SFML_GAME\Game.cpp(44,70): warning C4244: 'argument': conversion from '__int64' to 'unsigned int', possible loss of data
 C:\Users\HAMIDO\source\repos\SFML_GAME\Game.cpp(44,46): warning C4244: 'argument': conversion from '__int64' to 'unsigned int', possible loss of data
-C:\Users\HAMIDO\source\repos\SFML_GAME\Game.cpp(113,11): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-C:\Users\HAMIDO\source\repos\SFML_GAME\Game.cpp(114,11): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-C:\Users\HAMIDO\source\repos\SFML_GAME\Game.cpp(224,20): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-C:\Users\HAMIDO\source\repos\SFML_GAME\Game.cpp(306,70): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\HAMIDO\source\repos\SFML_GAME\Game.cpp(306,49): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\HAMIDO\source\repos\SFML_GAME\Game.cpp(110,17): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\HAMIDO\source\repos\SFML_GAME\Game.cpp(130,11): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\HAMIDO\source\repos\SFML_GAME\Game.cpp(131,11): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\HAMIDO\source\repos\SFML_GAME\Game.cpp(322,70): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\HAMIDO\source\repos\SFML_GAME\Game.cpp(322,49): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\xutility(255,82): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   (compiling source file 'Game.cpp')
   C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\xutility(255,82):
@@ -36,7 +36,7 @@ C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.3313
   (compiling source file 'Game.cpp')
   C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\xutility(255,82):
   the template instantiation context (the oldest one first) is
-  	C:\Users\HAMIDO\source\repos\SFML_GAME\Game.cpp(141,28):
+  	C:\Users\HAMIDO\source\repos\SFML_GAME\Game.cpp(165,28):
   	see reference to function template instantiation 'std::shared_ptr<CTransform> std::make_shared<CTransform,Vec2,Vec2,int>(Vec2 &&,Vec2 &&,int &&)' being compiled
   	C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\memory(2769,46):
   	see reference to function template instantiation 'std::_Ref_count_obj2<CTransform>::_Ref_count_obj2<_Ty,_Ty,int>(_Ty &&,_Ty &&,int &&)' being compiled
@@ -52,8 +52,8 @@ C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.3313
           ]
   
   Generating code
-  3 of 532 functions ( 0.6%) were compiled, the rest were copied from previous compilation.
+  1 of 551 functions ( 0.2%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
+    1 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   SFML_GAME.vcxproj -> C:\Users\HAMIDO\source\repos\SFML_GAME\x64\Release\SFML_GAME.exe
